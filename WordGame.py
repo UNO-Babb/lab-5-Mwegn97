@@ -1,40 +1,60 @@
-#Word Game is a knock-off version of a popular online word-guessing game.
-
 import random
 
 def inWord(letter, word):
-    """Returns boolean if letter is anywhere in the given word"""
+    if word.find(letter) >= 0:
+        return True
+    else:
+        return False
 
-    return False
-
-def inSpot(letter, word, spot):
-    """Returns boolean response if letter is in the given spot in the word."""
-
-    return False
-
-def rateGuess(myGuess, word):
-    """Rates your guess and returns a word with the following features.
-    - Capital letter if the letter is in the right spot
-    - Lower case letter if the letter is in the word but in the wrong spot
-    - * if the letter is not in the word at all"""
-
+def atSpot(letter, word, spot):
+    if word[spot] == letter:
+        return True
+    else:
+        return False
+    
+def checkWord(word, guess):
+    feedback = ""
+    spot = 0
+    for letter in guess:
+        if atSpot(letter, word, spot) == True:
+            feedback = feedback + letter.upper()
+        elif inWord(letter, word) == True:
+            feedback = feedback + letter.lower()
+        else:
+            feedback = feedback + "*"
+        spot = spot + 1
+    return feedback
 
 def main():
-    #Pick a random word from the list of all words
     wordFile = open("words.txt", 'r')
     content = wordFile.read()
     wordList = content.split("\n")
     todayWord = random.choice(wordList)
     print(todayWord)
 
-    #User should get 6 guesses to guess
+    wordLength = len(todayWord)
 
-    #Ask user for their guess
-    #Give feedback using on their word:
+    print("Welcome to the Word Game!")
+    print(f"Guess the {wordLength}-letter word. You have 6 tries.")
 
+    guessCorrect = False
 
+    for attempt in range(6):
+        guess = input(f"Guess #{attempt + 1}: ").lower()
 
+        if len(guess) != wordLength:
+            print(f"Please enter a {wordLength}-letter word.")
+        else:
+            feedback = checkWord(todayWord, guess)
+            print("Result:", feedback)
+            
+            if guess == todayWord:
+                print("You guessed the word!")
+                guessCorrect = True
+                break
 
+    if not guessCorrect:
+        print(f"You are out of guesses. The word was: {todayWord}")
 
 if __name__ == '__main__':
   main()
